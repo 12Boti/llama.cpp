@@ -32,6 +32,7 @@
   enableCurl ? true,
   useVulkan ? false,
   llamaVersion ? "0.0.0", # Arbitrary version, substituted by the flake
+  autoAddDriverRunpath,
 
   # It's necessary to consistently use backendStdenv when building with CUDA support,
   # otherwise we get libstdc++ errors downstream.
@@ -192,10 +193,7 @@ effectiveStdenv.mkDerivation (
       ]
       ++ optionals useCuda [
         cudaPackages.cuda_nvcc
-
-        # TODO: Replace with autoAddDriverRunpath
-        # once https://github.com/NixOS/nixpkgs/pull/275241 has been merged
-        cudaPackages.autoAddOpenGLRunpathHook
+        autoAddDriverRunpath
       ]
       ++ optionals (effectiveStdenv.hostPlatform.isGnu && enableStatic) [
         glibc.static
